@@ -8,10 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,24 +65,33 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
 
     @Override
     public Writer save(Writer writer) {
+        Writer resultWriter = null;
+        ResultSet generatedKeys;
         String query = "INSERT INTO writers (firstname, lastname, status) VALUES (?, ?, ?)";
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)){
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             statement.setString(1, writer.getFirstName());
             statement.setString(2, writer.getLastName());
             statement.setString(3, String.valueOf(Status.ACTIVE));
+
+            generatedKeys = statement.getGeneratedKeys();
+
+            if (generatedKeys.next()){
+                resultWriter = getById(generatedKeys.getInt(1));
+            }
 
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return writer;
+        return resultWriter;
     }
 
     @Override
     public Writer update(Writer writer) {
+        Writer resultWriter = null;
         String query = "UPDATE writers SET firstname = ?, lastname = ? WHERE id = ?";
 
         try (Connection connection = JdbcConnection.getConnection();
@@ -95,11 +101,13 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
             statement.setInt(2, writer.getId());
 
             statement.executeUpdate();
+
+            resultWriter = getById(writer.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return writer;
+        return resultWriter;
     }
 
     @Override

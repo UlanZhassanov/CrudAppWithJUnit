@@ -30,7 +30,7 @@ public class LabelView {
                     System.out.print("Enter name: ");
                     String name = scanner.nextLine();
                     Label label = new Label(name, Status.ACTIVE);
-                    labelController.saveLabel(label);
+                    System.out.println(labelController.saveLabel(label));
                     System.out.println("Label saved to db");
                     System.out.println();
                     break;

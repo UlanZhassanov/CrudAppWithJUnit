@@ -42,7 +42,7 @@ public class WriterView {
 
 
                     Writer writer = new Writer(firstName, lastName, Status.ACTIVE);
-                    writerController.saveWriter(writer);
+                    System.out.println(writerController.saveWriter(writer));
                     System.out.println("Writer saved to db");
                     System.out.println();
                     break;

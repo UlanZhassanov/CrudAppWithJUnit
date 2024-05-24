@@ -44,7 +44,7 @@ public class PostView {
 
 
                     Post post = new Post(content, labelId, writerId);
-                    postController.savePost(post);
+                    System.out.println(postController.savePost(post));
                     System.out.println("Post saved to db");
                     System.out.println();
                     break;

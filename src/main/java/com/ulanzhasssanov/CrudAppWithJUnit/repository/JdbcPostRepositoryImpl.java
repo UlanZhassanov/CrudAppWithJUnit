@@ -75,10 +75,12 @@ public class JdbcPostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post post) {
+        Post resultPost = null;
+        ResultSet generatedKeys;
         String query = "INSERT INTO posts (content, created, updated, labelId, writerId, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)){
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             Timestamp currentTimestamp = Timestamp.from(Instant.now());
 
             statement.setString(1, post.getContent());
@@ -88,16 +90,22 @@ public class JdbcPostRepositoryImpl implements PostRepository {
             statement.setInt(5, post.getWriterId());
             statement.setString(6, String.valueOf(Status.ACTIVE));
 
+            generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()){
+                resultPost = getById(generatedKeys.getInt(1));
+            }
+
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return post;
+        return resultPost;
     }
 
     @Override
     public Post update(Post post) {
+        Post resultPost = null;
         String query = "UPDATE posts SET content = ?, labelId = ?, updated = ? WHERE id = ?";
 
         try (Connection connection = JdbcConnection.getConnection();
@@ -110,11 +118,13 @@ public class JdbcPostRepositoryImpl implements PostRepository {
             statement.setInt(4, post.getId());
 
             statement.executeUpdate();
+
+            resultPost = getById(post.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return post;
+        return resultPost;
     }
 
     @Override

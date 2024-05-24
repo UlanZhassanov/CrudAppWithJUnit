@@ -4,10 +4,7 @@ import com.ulanzhasssanov.CrudAppWithJUnit.enums.PostStatus;
 import com.ulanzhasssanov.CrudAppWithJUnit.enums.Status;
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Label;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,23 +60,31 @@ public class JdbcLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public Label save(Label label) {
+        Label resultLabel = null;
         String query = "INSERT INTO labels (name, status) VALUES (?, ?)";
+        ResultSet generatedKeys;
 
         try (Connection connection = JdbcConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(query)){
+        PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             statement.setString(1, label.getName());
             statement.setString(2, String.valueOf(PostStatus.ACTIVE));
 
             statement.executeUpdate();
+
+            generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()){
+                resultLabel = getById(generatedKeys.getInt(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return label;
+        return resultLabel;
     }
 
     @Override
     public Label update(Label label) {
+        Label resultLabel = null;
         String query = "UPDATE labels SET name = ? WHERE id = ?";
 
         try (Connection connection = JdbcConnection.getConnection();
@@ -88,11 +93,12 @@ public class JdbcLabelRepositoryImpl implements LabelRepository {
             statement.setInt(2, label.getId());
 
             statement.executeUpdate();
+            resultLabel = getById(label.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return label;
+        return resultLabel;
     }
 
     @Override
