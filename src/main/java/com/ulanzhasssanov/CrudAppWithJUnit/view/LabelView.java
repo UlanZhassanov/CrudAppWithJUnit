@@ -71,7 +71,7 @@ public class LabelView {
                     System.out.println();
                     break;
                 case 0:
-                    System.out.println("Exiting the application. Goodbye!");
+                    System.out.println("Exiting from LabelView");
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");

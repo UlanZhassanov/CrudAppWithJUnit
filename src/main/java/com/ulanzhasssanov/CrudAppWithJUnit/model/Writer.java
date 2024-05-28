@@ -4,23 +4,26 @@ import com.ulanzhasssanov.CrudAppWithJUnit.enums.Status;
 
 import java.util.List;
 
+
 public class Writer {
     private int id;
     private String firstName;
     private String lastName;
+    private List<Post> posts;
     private Status status;
 
     public Writer() {
     }
 
-    public Writer(String firstName, String lastName, Status status) {
+    public Writer(int id, String firstName, String lastName, List<Post> posts, Status status) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.posts = posts;
         this.status = status;
     }
 
-    public Writer(int id, String firstName, String lastName, Status status) {
-        this.id = id;
+    public Writer(String firstName, String lastName, Status status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.status = status;
@@ -50,6 +53,14 @@ public class Writer {
         this.lastName = lastName;
     }
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -64,6 +75,7 @@ public class Writer {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", posts='" + posts + '\'' +
                 ", status=" + status +
                 '}';
     }

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 public class PostView {
 
     public void postOperations(){
+        LabelController labelController = new LabelController();
         PostController postController = new PostController();
         Scanner scanner = new Scanner(System.in);
         LocalDateTime dateTimeNow = LocalDateTime.now();
@@ -33,17 +34,34 @@ public class PostView {
             scanner.nextLine(); // Consume the newline character
             System.out.println();
 
+
+            List<Label> allLabels = labelController.getAllLabels();
+
             switch (choice) {
                 case 1:
                     System.out.print("Enter content: ");
                     String content = scanner.nextLine();
-                    System.out.print("Enter labelId: ");
-                    Integer labelId = scanner.nextInt();
+
+                    System.out.println("Available labels:");
+                    System.out.println(labelController.getAllLabels());
+                    System.out.print("Enter labels (separate by comma): ");
+                    String labelIds = scanner.nextLine();
+                    String[] labelIdsArray = labelIds.split(",");
+                    List<Label> selectedLabels = new ArrayList<>();
+                    for (String labelIdStr : labelIdsArray) {
+                        int labelId = Integer.parseInt(labelIdStr.trim());
+                        for (Label label : allLabels) {
+                            if (label.getId() == labelId) {
+                                selectedLabels.add(label);
+                                break;
+                            }
+                        }
+                    }
+
                     System.out.print("Enter writerId: ");
                     Integer writerId = scanner.nextInt();
 
-
-                    Post post = new Post(content, labelId, writerId);
+                    Post post = new Post(content, selectedLabels, writerId);
                     System.out.println(postController.savePost(post));
                     System.out.println("Post saved to db");
                     System.out.println();
@@ -70,12 +88,27 @@ public class PostView {
 
                     System.out.print("Enter new content: ");
                     String postUpdateContent = scanner.nextLine();
-                    System.out.print("Enter labels (enter label id): ");
-                    Integer postUpdateLabelId = scanner.nextInt();
+
+                    System.out.println("Available labels:");
+                    System.out.println(labelController.getAllLabels());
+                    System.out.print("Enter labels (separate by comma): ");
+                    String labelIdsForUpdate = scanner.nextLine();
+                    String[] labelIdsForUpdateArray = labelIdsForUpdate.split(",");
+                    List<Label> selectedLabelsForUpdate = new ArrayList<>();
+                    for (String labelIdStr : labelIdsForUpdateArray) {
+                        int labelId = Integer.parseInt(labelIdStr.trim());
+                        for (Label label : allLabels) {
+                            if (label.getId() == labelId) {
+                                selectedLabelsForUpdate.add(label);
+                                break;
+                            }
+                        }
+                    }
+
                     Post postUpdate = postController.getPostById(postUpdateId);
 
                     postUpdate.setContent(postUpdateContent);
-                    postUpdate.setLabelId(postUpdateLabelId);
+                    postUpdate.setLabels(selectedLabelsForUpdate);
 
                     System.out.println("Updated post " + postUpdateId + ":");
                     System.out.println(postController.updatePost(postUpdate));
@@ -91,7 +124,7 @@ public class PostView {
                     System.out.println();
                     break;
                 case 0:
-                    System.out.println("Exiting the application. Goodbye!");
+                    System.out.println("Exiting from PostView");
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");

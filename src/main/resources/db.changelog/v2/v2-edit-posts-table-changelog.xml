@@ -3,8 +3,12 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="v1-create-labels-table-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v1-create-writers-table-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v1-create-posts-table-changelog.xml" relativeToChangelogFile="true"/>
+    <changeSet id="v2-2" author="Ulan Zhassanov">
+        <dropForeignKeyConstraint  baseTableName="posts"
+                                   constraintName="fk_label_post"/>
+        <dropColumn columnName="labelId"
+                    tableName="posts">
+        </dropColumn>
+    </changeSet>
 
 </databaseChangeLog>

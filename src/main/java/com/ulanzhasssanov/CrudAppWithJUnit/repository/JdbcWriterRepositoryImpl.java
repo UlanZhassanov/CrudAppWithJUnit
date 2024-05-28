@@ -1,18 +1,15 @@
 package com.ulanzhasssanov.CrudAppWithJUnit.repository;
 
 import com.ulanzhasssanov.CrudAppWithJUnit.enums.Status;
+import com.ulanzhasssanov.CrudAppWithJUnit.model.Post;
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Writer;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcWriterRepositoryImpl implements WriterRepository {
+    JdbcPostRepositoryImpl postRepository = new JdbcPostRepositoryImpl();
 
     @Override
     public Writer getById(Integer id) {
@@ -22,15 +19,17 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    writer = new Writer();
-                    writer.setId(resultSet.getInt("id"));
-                    writer.setFirstName(resultSet.getString("firstname"));
-                    writer.setLastName(resultSet.getString("lastname"));
-                    writer.setStatus(Status.ACTIVE);
-                }
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                writer = new Writer();
+                writer.setId(resultSet.getInt("id"));
+                writer.setFirstName(resultSet.getString("firstname"));
+                writer.setLastName(resultSet.getString("lastname"));
+                writer.setStatus(Status.ACTIVE);
             }
+
+            List<Post> posts = postRepository.getByWriterId(writer.getId());
+            writer.setPosts(posts);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,12 +46,15 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
         try (Connection connection = JdbcConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Writer writer = new Writer();
                 writer.setId(resultSet.getInt("id"));
                 writer.setFirstName(resultSet.getString("firstname"));
                 writer.setLastName(resultSet.getString("lastname"));
                 writer.setStatus(Status.ACTIVE);
+
+                List<Post> posts = postRepository.getByWriterId(writer.getId());
+                writer.setPosts(posts);
 
                 writers.add(writer);
             }
@@ -70,18 +72,18 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
         String query = "INSERT INTO writers (firstname, lastname, status) VALUES (?, ?, ?)";
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, writer.getFirstName());
             statement.setString(2, writer.getLastName());
             statement.setString(3, String.valueOf(Status.ACTIVE));
+            statement.executeUpdate();
 
             generatedKeys = statement.getGeneratedKeys();
 
-            if (generatedKeys.next()){
+            if (generatedKeys.next()) {
                 resultWriter = getById(generatedKeys.getInt(1));
             }
 
-            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,10 +97,10 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
         String query = "UPDATE writers SET firstname = ?, lastname = ? WHERE id = ?";
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)){
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, writer.getFirstName());
-            statement.setString(1, writer.getLastName());
-            statement.setInt(2, writer.getId());
+            statement.setString(2, writer.getLastName());
+            statement.setInt(3, writer.getId());
 
             statement.executeUpdate();
 
@@ -116,7 +118,7 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
         String query = "UPDATE writers SET status = ? WHERE id = ?";
 
         try (Connection connection = JdbcConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)){
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, String.valueOf(Status.DELETED));
             statement.setInt(2, writer.getId());
 

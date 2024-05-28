@@ -90,7 +90,7 @@ public class WriterView {
                     System.out.println();
                     break;
                 case 0:
-                    System.out.println("Exiting the application. Goodbye!");
+                    System.out.println("Exiting from WriterView");
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");

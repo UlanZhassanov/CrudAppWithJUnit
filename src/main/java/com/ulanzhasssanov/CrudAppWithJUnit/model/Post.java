@@ -11,25 +11,25 @@ public class Post {
     private String content;
     private String created;
     private String updated;
-    private Integer labelId;
+    private List<Label> labels;
     private Integer writerId;
     private PostStatus status;
 
     public Post() {
     }
 
-    public Post(String content, Integer labelId, Integer writerId) {
+    public Post(String content, List<Label> labels, Integer writerId) {
         this.content = content;
-        this.labelId = labelId;
+        this.labels = labels;
         this.writerId = writerId;
     }
 
-    public Post(int id, String content, String created, String updated, Integer labelId, Integer writerId, PostStatus status) {
+    public Post(int id, String content, String created, String updated, List<Label> labels, Integer writerId, PostStatus status) {
         this.id = id;
         this.content = content;
         this.created = created;
         this.updated = updated;
-        this.labelId = labelId;
+        this.labels = labels;
         this.writerId = writerId;
         this.status = status;
     }
@@ -66,12 +66,12 @@ public class Post {
         this.updated = updated;
     }
 
-    public Integer getLabelId() {
-        return labelId;
+    public List<Label> getLabels() {
+        return labels;
     }
 
-    public void setLabelId(Integer labelId) {
-        this.labelId = labelId;
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 
     public Integer getWriterId() {
@@ -97,7 +97,8 @@ public class Post {
                 ", content='" + content + '\'' +
                 ", created='" + created + '\'' +
                 ", updated='" + updated + '\'' +
-                ", labelId=" + labelId +
+                ", labels=" + labels +
+                ", writerId='" + writerId + '\'' +
                 ", status=" + status +
                 '}';
     }
