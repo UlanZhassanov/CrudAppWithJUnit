@@ -1,24 +1,16 @@
 package com.ulanzhasssanov.CrudAppWithJUnit.view;
 
-import com.ulanzhasssanov.CrudAppWithJUnit.controller.PostController;
 import com.ulanzhasssanov.CrudAppWithJUnit.controller.WriterController;
 import com.ulanzhasssanov.CrudAppWithJUnit.enums.Status;
-import com.ulanzhasssanov.CrudAppWithJUnit.model.Post;
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Writer;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class WriterView {
+    WriterController writerController = new WriterController();
+    private final Scanner scanner = new Scanner(System.in);
 
     public void writerOperations(){
-        WriterController writerController = new WriterController();
-        Scanner scanner = new Scanner(System.in);
-        LocalDateTime dateTimeNow = LocalDateTime.now();
 
         while (true) {
             System.out.println("1. Create Writer");
@@ -99,20 +91,5 @@ public class WriterView {
         }
     }
 
-    public List<Post> getWriterPosts(String postIds){
-        PostController postController = new PostController();
-        List<Post> postList = new ArrayList<>();
-
-        boolean isValidNumbersSeparatedByCommas = Pattern.compile("\\d+(,\\d+)*").matcher(postIds).matches();
-
-        if (isValidNumbersSeparatedByCommas){
-            int[] ids = Arrays.stream(postIds.split(",")).mapToInt(Integer::parseInt).toArray();
-            for (int id:ids) {
-                postList.add(postController.getPostById(id));
-            }
-            return postList;
-        }
-        return null;
-    }
 
 }

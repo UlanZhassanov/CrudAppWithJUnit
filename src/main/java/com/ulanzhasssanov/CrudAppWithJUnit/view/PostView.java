@@ -2,24 +2,19 @@ package com.ulanzhasssanov.CrudAppWithJUnit.view;
 
 import com.ulanzhasssanov.CrudAppWithJUnit.controller.LabelController;
 import com.ulanzhasssanov.CrudAppWithJUnit.controller.PostController;
-import com.ulanzhasssanov.CrudAppWithJUnit.enums.PostStatus;
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Label;
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Post;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class PostView {
+    LabelController labelController = new LabelController();
+    PostController postController = new PostController();
+    private final Scanner scanner = new Scanner(System.in);
 
     public void postOperations(){
-        LabelController labelController = new LabelController();
-        PostController postController = new PostController();
-        Scanner scanner = new Scanner(System.in);
-        LocalDateTime dateTimeNow = LocalDateTime.now();
 
         while (true) {
             System.out.println("1. Create Post");

@@ -2,33 +2,30 @@ package com.ulanzhasssanov.CrudAppWithJUnit.controller;
 
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Label;
 import com.ulanzhasssanov.CrudAppWithJUnit.repository.JdbcLabelRepositoryImpl;
+import com.ulanzhasssanov.CrudAppWithJUnit.service.LabelService;
 
 import java.util.List;
 
 public class LabelController {
-    JdbcLabelRepositoryImpl jdbcLabelRepository = new JdbcLabelRepositoryImpl();
+    private LabelService labelService = new LabelService(new JdbcLabelRepositoryImpl());
 
     public Label saveLabel(Label label){
-        Label savedLabel = jdbcLabelRepository.save(label);
-        return savedLabel;
+        return labelService.saveLabel(label);
     }
 
     public List<Label> getAllLabels(){
-        List<Label> labels = jdbcLabelRepository.getAll();
-        return labels;
+        return labelService.getAllLabels();
     }
 
     public Label getLabelById(Integer id){
-        Label label = jdbcLabelRepository.getById(id);
-        return label;
+        return labelService.getLabelById(id);
     }
 
     public Label updateLabel(Label label){
-        Label updatedLabel = jdbcLabelRepository.update(label);
-        return updatedLabel;
+        return labelService.updateLabel(label);
     }
 
     public void deleteLabel(Integer id){
-        jdbcLabelRepository.deleteById(id);
+        labelService.deleteLabelById(id);
     }
 }

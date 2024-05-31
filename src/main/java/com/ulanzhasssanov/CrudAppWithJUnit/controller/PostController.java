@@ -2,35 +2,32 @@ package com.ulanzhasssanov.CrudAppWithJUnit.controller;
 
 import com.ulanzhasssanov.CrudAppWithJUnit.model.Post;
 import com.ulanzhasssanov.CrudAppWithJUnit.repository.JdbcPostRepositoryImpl;
+import com.ulanzhasssanov.CrudAppWithJUnit.service.PostService;
 
 import java.util.List;
 
 public class PostController {
-    JdbcPostRepositoryImpl jdbcPostRepository = new JdbcPostRepositoryImpl();
+    private PostService postService = new PostService(new JdbcPostRepositoryImpl());
 
     public Post savePost(Post post){
-        Post savedPost = jdbcPostRepository.save(post);
-        return savedPost;
+        return postService.savePost(post);
     }
 
 
     public List<Post> getAllPosts(){
-        List<Post> posts = jdbcPostRepository.getAll();
-        return posts;
+        return postService.getAllPosts();
     }
 
     public Post getPostById(Integer id){
-        Post post = jdbcPostRepository.getById(id);
-        return post;
+        return postService.getPostById(id);
     }
 
     public Post updatePost(Post post){
-        Post updatedPost = jdbcPostRepository.update(post);
-        return updatedPost;
+        return postService.updatePost(post);
     }
 
     public void deletePost(Integer id){
-        jdbcPostRepository.deleteById(id);
+        postService.deletePostById(id);
     }
 
 }

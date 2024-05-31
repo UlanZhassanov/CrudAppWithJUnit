@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcPostRepositoryImpl implements PostRepository {
-    JdbcPostLabelRepositoryImpl postLabelRepository = new JdbcPostLabelRepositoryImpl();
 
     private static final String GET_POST_BY_ID = "SELECT * FROM posts WHERE id = ? AND status='ACTIVE'";
     private static final String GET_LABELS_BY_POST_ID = "SELECT l.* FROM post_label pl " +

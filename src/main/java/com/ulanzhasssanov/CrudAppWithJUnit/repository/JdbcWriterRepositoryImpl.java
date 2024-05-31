@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcWriterRepositoryImpl implements WriterRepository {
-    JdbcPostRepositoryImpl postRepository = new JdbcPostRepositoryImpl();
+    private JdbcPostRepositoryImpl postRepository = new JdbcPostRepositoryImpl();
 
     @Override
     public Writer getById(Integer id) {
@@ -28,6 +28,7 @@ public class JdbcWriterRepositoryImpl implements WriterRepository {
                 writer.setStatus(Status.ACTIVE);
             }
 
+            if (writer == null) throw new AssertionError();
             List<Post> posts = postRepository.getByWriterId(writer.getId());
             writer.setPosts(posts);
         } catch (SQLException e) {

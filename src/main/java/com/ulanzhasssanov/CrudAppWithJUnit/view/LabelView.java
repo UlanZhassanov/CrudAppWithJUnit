@@ -7,10 +7,10 @@ import com.ulanzhasssanov.CrudAppWithJUnit.model.Label;
 import java.util.Scanner;
 
 public class LabelView {
+    LabelController labelController = new LabelController();
+    private final Scanner scanner = new Scanner(System.in);
 
     public void labelOperations(){
-        LabelController labelController = new LabelController();
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("1. Create Label");
